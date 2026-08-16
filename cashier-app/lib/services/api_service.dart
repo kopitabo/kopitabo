@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/product.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:3001/api';
+  static const String baseUrl = 'https://kopitabo.onrender.com/api';
 
   Future<List<Product>> fetchProducts() async {
     try {
