@@ -77,11 +77,12 @@ export default function AddIngredientModal({
         setFormData({ name: "", unit: "g", stock: "", costPerUnit: "" });
         onIngredientAdded();
       } else {
-        alert(ingredientToEdit ? "Failed to update ingredient" : "Failed to add ingredient");
+        const errText = await res.text();
+        alert(`Gagal menyimpan bahan baku (${res.status}): ${errText || 'Terjadi kesalahan pada server'}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("An error occurred");
+      alert(`Koneksi Gagal: ${error?.message || 'Tidak dapat terhubung ke server backend API'}`);
     } finally {
       setLoading(false);
     }
