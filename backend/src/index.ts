@@ -53,11 +53,28 @@ app.post('/api/products', async (req, res) => {
       });
     }
 
+    // Auto calculate HPP from recipe ingredients if recipes exist
+    let computedHpp = parseFloat(hpp || 0);
+    if (recipes && Array.isArray(recipes) && recipes.length > 0) {
+      let recipeSum = 0;
+      for (const r of recipes) {
+        if (r.ingredientId) {
+          const ing = await prisma.ingredient.findUnique({ where: { id: r.ingredientId } });
+          if (ing) {
+            recipeSum += (parseFloat(r.quantity || 0) * (ing.costPerUnit || 0));
+          }
+        }
+      }
+      if (recipeSum > 0) {
+        computedHpp = recipeSum;
+      }
+    }
+
     const product = await prisma.product.create({
       data: {
         name,
         price: parseFloat(price || 0),
-        hpp: parseFloat(hpp || 0),
+        hpp: computedHpp,
         imageUrl: imageUrl || null,
         categoryId: category.id,
         recipes: recipes && Array.isArray(recipes) ? {
@@ -107,12 +124,29 @@ app.put('/api/products/:id', async (req, res) => {
       });
     }
 
+    // Auto calculate HPP from recipe ingredients if recipes exist
+    let computedHpp = hpp !== undefined ? parseFloat(hpp) : undefined;
+    if (recipes && Array.isArray(recipes) && recipes.length > 0) {
+      let recipeSum = 0;
+      for (const r of recipes) {
+        if (r.ingredientId) {
+          const ing = await prisma.ingredient.findUnique({ where: { id: r.ingredientId } });
+          if (ing) {
+            recipeSum += (parseFloat(r.quantity || 0) * (ing.costPerUnit || 0));
+          }
+        }
+      }
+      if (recipeSum > 0) {
+        computedHpp = recipeSum;
+      }
+    }
+
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
         name,
         price: price !== undefined ? parseFloat(price) : undefined,
-        hpp: hpp !== undefined ? parseFloat(hpp) : undefined,
+        hpp: computedHpp,
         imageUrl: imageUrl !== undefined ? imageUrl : undefined,
         categoryId: category ? category.id : undefined,
         recipes: recipes && Array.isArray(recipes) ? {
@@ -305,6 +339,27 @@ app.put('/api/inventory/:id', async (req, res) => {
         costPerUnit: costPerUnit !== undefined ? parseFloat(costPerUnit) : undefined
       }
     });
+
+    // Automatically recalculate HPP for all menu products using this ingredient
+    if (costPerUnit !== undefined) {
+      const affectedRecipes = await prisma.recipe.findMany({
+        where: { ingredientId: id },
+        select: { productId: true }
+      });
+      const productIds = Array.from(new Set(affectedRecipes.map(r => r.productId)));
+
+      for (const prodId of productIds) {
+        const prodRecipes = await prisma.recipe.findMany({
+          where: { productId: prodId },
+          include: { ingredient: true }
+        });
+        const newHpp = prodRecipes.reduce((sum, r) => sum + (r.quantity * (r.ingredient.costPerUnit || 0)), 0);
+        await prisma.product.update({
+          where: { id: prodId },
+          data: { hpp: newHpp }
+        });
+      }
+    }
 
     res.json(updatedIngredient);
   } catch (error) {
