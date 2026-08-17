@@ -24,6 +24,11 @@ app.get('/api/products', async (req, res) => {
       include: {
         category: true,
         modifiers: true,
+        recipes: {
+          include: {
+            ingredient: true
+          }
+        }
       },
     });
     res.json(products);
@@ -35,7 +40,7 @@ app.get('/api/products', async (req, res) => {
 // Create a new product
 app.post('/api/products', async (req, res) => {
   try {
-    const { name, price, categoryName } = req.body;
+    const { name, price, hpp, categoryName, recipes } = req.body;
     
     // Find or create category
     let category = await prisma.category.findFirst({
@@ -51,8 +56,23 @@ app.post('/api/products', async (req, res) => {
     const product = await prisma.product.create({
       data: {
         name,
-        price: parseFloat(price),
-        categoryId: category.id
+        price: parseFloat(price || 0),
+        hpp: parseFloat(hpp || 0),
+        categoryId: category.id,
+        recipes: recipes && Array.isArray(recipes) ? {
+          create: recipes.map((r: any) => ({
+            ingredientId: r.ingredientId,
+            quantity: parseFloat(r.quantity || 0)
+          }))
+        } : undefined
+      },
+      include: {
+        category: true,
+        recipes: {
+          include: {
+            ingredient: true
+          }
+        }
       }
     });
     
@@ -60,6 +80,73 @@ app.post('/api/products', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to create product' });
+  }
+});
+
+// Update an existing product
+app.put('/api/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price, hpp, categoryName, recipes } = req.body;
+
+    let category = await prisma.category.findFirst({
+      where: { name: categoryName }
+    });
+
+    if (!category && categoryName) {
+      category = await prisma.category.create({
+        data: { name: categoryName }
+      });
+    }
+
+    // Clear existing recipes if new ones provided
+    if (recipes && Array.isArray(recipes)) {
+      await prisma.recipe.deleteMany({
+        where: { productId: id }
+      });
+    }
+
+    const updatedProduct = await prisma.product.update({
+      where: { id },
+      data: {
+        name,
+        price: price !== undefined ? parseFloat(price) : undefined,
+        hpp: hpp !== undefined ? parseFloat(hpp) : undefined,
+        categoryId: category ? category.id : undefined,
+        recipes: recipes && Array.isArray(recipes) ? {
+          create: recipes.map((r: any) => ({
+            ingredientId: r.ingredientId,
+            quantity: parseFloat(r.quantity || 0)
+          }))
+        } : undefined
+      },
+      include: {
+        category: true,
+        recipes: {
+          include: {
+            ingredient: true
+          }
+        }
+      }
+    });
+
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update product' });
+  }
+});
+
+// Delete a product
+app.delete('/api/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await prisma.recipe.deleteMany({ where: { productId: id } });
+    await prisma.product.delete({ where: { id } });
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to delete product' });
   }
 });
 
@@ -183,13 +270,14 @@ app.get('/api/inventory', async (req, res) => {
 // Create a new ingredient
 app.post('/api/inventory', async (req, res) => {
   try {
-    const { name, unit, stock } = req.body;
+    const { name, unit, stock, costPerUnit } = req.body;
     
     const ingredient = await prisma.ingredient.create({
       data: {
         name,
         unit,
-        stock: parseFloat(stock)
+        stock: parseFloat(stock || 0),
+        costPerUnit: parseFloat(costPerUnit || 0)
       }
     });
     
@@ -197,6 +285,42 @@ app.post('/api/inventory', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to create ingredient' });
+  }
+});
+
+// Update an ingredient
+app.put('/api/inventory/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, unit, stock, costPerUnit } = req.body;
+
+    const updatedIngredient = await prisma.ingredient.update({
+      where: { id },
+      data: {
+        name,
+        unit,
+        stock: stock !== undefined ? parseFloat(stock) : undefined,
+        costPerUnit: costPerUnit !== undefined ? parseFloat(costPerUnit) : undefined
+      }
+    });
+
+    res.json(updatedIngredient);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update ingredient' });
+  }
+});
+
+// Delete an ingredient
+app.delete('/api/inventory/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await prisma.recipe.deleteMany({ where: { ingredientId: id } });
+    await prisma.ingredient.delete({ where: { id } });
+    res.json({ message: 'Ingredient deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to delete ingredient' });
   }
 });
 

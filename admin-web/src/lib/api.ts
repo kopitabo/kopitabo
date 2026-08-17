@@ -1,4 +1,4 @@
-export const API_URL = 'https://kopitabo.onrender.com/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 export async function fetchProducts() {
   try {
@@ -8,6 +8,16 @@ export async function fetchProducts() {
   } catch (error) {
     console.error(error);
     return [];
+  }
+}
+
+export async function deleteProduct(id: string) {
+  try {
+    const res = await fetch(`${API_URL}/products/${id}`, { method: 'DELETE' });
+    return res.ok;
+  } catch (error) {
+    console.error(error);
+    return false;
   }
 }
 
@@ -21,6 +31,7 @@ export async function fetchOrders() {
     return [];
   }
 }
+
 export async function fetchInventory() {
   try {
     const res = await fetch(`${API_URL}/inventory`, { cache: 'no-store' });
@@ -29,5 +40,15 @@ export async function fetchInventory() {
   } catch (error) {
     console.error(error);
     return [];
+  }
+}
+
+export async function deleteIngredient(id: string) {
+  try {
+    const res = await fetch(`${API_URL}/inventory/${id}`, { method: 'DELETE' });
+    return res.ok;
+  } catch (error) {
+    console.error(error);
+    return false;
   }
 }

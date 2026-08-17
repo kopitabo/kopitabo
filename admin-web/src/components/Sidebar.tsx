@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Coffee, ClipboardList, Settings, Store } from 'lucide-react';
+import { Home, Coffee, ClipboardList, Settings, Store, Calculator } from 'lucide-react';
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -44,6 +44,13 @@ export function Sidebar() {
         >
           <ClipboardList size={20} className={pathname === '/inventory' ? 'text-amber-500' : ''} />
           <span className="font-medium">Inventory & Stock</span>
+        </Link>
+        <Link 
+          href="/hpp-calculator" 
+          className={`flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 ${pathname === '/hpp-calculator' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20 shadow-sm' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`}
+        >
+          <Calculator size={20} className={pathname === '/hpp-calculator' ? 'text-amber-500' : ''} />
+          <span className="font-medium">Kalkulator HPP & Pricing</span>
         </Link>
 
         <div className="pt-4 pb-2 px-4">
