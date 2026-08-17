@@ -37672,7 +37672,7 @@ n=A.X(new A.a7(j,new A.SE(),n),n.h("af.E"))
 m=t.N
 l=t.K
 s=5
-return A.P(p.b.rU(A.ax(["totalAmount",o,"status","COMPLETED","orderItems",n,"payments",A.d([A.ax(["amount",p.gwI(),"paymentMethod",p.c,"status","SUCCESS"],m,l)],t.Mq)],m,l)),$async$pW)
+return A.P(p.b.rU(A.ax(["totalAmount",o,"status","PENDING","orderItems",n,"payments",A.d([A.ax(["amount",p.gwI(),"paymentMethod",p.c,"status","SUCCESS"],m,l)],t.Mq)],m,l)),$async$pW)
 case 5:s=!b?3:4
 break
 case 3:o=$.ajC()
@@ -37688,7 +37688,7 @@ n=k.length
 if(n<16)A.a1(A.dw("buffer too small: need 16: length="+n))
 n=$.arK()
 s=6
-return A.P(o.qF(A.ax(["local_id",n[k[0]]+n[k[1]]+n[k[2]]+n[k[3]]+"-"+n[k[4]]+n[k[5]]+"-"+n[k[6]]+n[k[7]]+"-"+n[k[8]]+n[k[9]]+"-"+n[k[10]]+n[k[11]]+n[k[12]]+n[k[13]]+n[k[14]]+n[k[15]],"total_amount",p.gwI(),"status","COMPLETED","sync_status","PENDING","created_at",new A.fX(Date.now(),0,!1).aec()],m,t.z)),$async$pW)
+return A.P(o.qF(A.ax(["local_id",n[k[0]]+n[k[1]]+n[k[2]]+n[k[3]]+"-"+n[k[4]]+n[k[5]]+"-"+n[k[6]]+n[k[7]]+"-"+n[k[8]]+n[k[9]]+"-"+n[k[10]]+n[k[11]]+n[k[12]]+n[k[13]]+n[k[14]]+n[k[15]],"total_amount",p.gwI(),"status","PENDING","sync_status","PENDING","created_at",new A.fX(Date.now(),0,!1).aec()],m,t.z)),$async$pW)
 case 6:case 4:B.b.O(j)
 p.aq()
 q=!0

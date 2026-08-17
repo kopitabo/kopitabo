@@ -63,7 +63,7 @@ class CartProvider with ChangeNotifier {
 
     final orderData = {
       'totalAmount': totalAmount,
-      'status': 'COMPLETED',
+      'status': 'PENDING',
       'orderItems': _items.map((item) => {
         'productId': item.product.id,
         'quantity': item.quantity,
@@ -86,7 +86,7 @@ class CartProvider with ChangeNotifier {
       await DatabaseHelper.instance.insertOfflineOrder({
         'local_id': const Uuid().v4(),
         'total_amount': totalAmount,
-        'status': 'COMPLETED',
+        'status': 'PENDING',
         'sync_status': 'PENDING',
         'created_at': DateTime.now().toIso8601String()
       });
