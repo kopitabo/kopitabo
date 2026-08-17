@@ -180,6 +180,26 @@ app.get('/api/inventory', async (req, res) => {
   }
 });
 
+// Create a new ingredient
+app.post('/api/inventory', async (req, res) => {
+  try {
+    const { name, unit, stock } = req.body;
+    
+    const ingredient = await prisma.ingredient.create({
+      data: {
+        name,
+        unit,
+        stock: parseFloat(stock)
+      }
+    });
+    
+    res.status(201).json(ingredient);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to create ingredient' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
