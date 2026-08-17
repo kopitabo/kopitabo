@@ -13,11 +13,11 @@ export function Sidebar() {
 
   return (
     <div className="w-72 bg-slate-950 text-white min-h-screen p-4 flex flex-col border-r border-slate-800/60 shadow-2xl">
-      <div className="mb-10 p-4 flex items-center gap-3">
-        <div className="bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.15)]">
-            <Store className="text-amber-500" size={24} />
+      <div className="mb-10 p-4 flex flex-col items-center gap-3">
+        <div className="w-28 h-28 relative bg-slate-100 rounded-full overflow-hidden shadow-[0_0_20px_rgba(245,158,11,0.2)] border-2 border-amber-500/20">
+            <img src="/logo.png" alt="Kopi Tabo Logo" className="w-full h-full object-cover scale-110" />
         </div>
-        <div>
+        <div className="text-center mt-2">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">Kopi Tabo</h1>
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-[0.2em] mt-0.5">Admin Portal</p>
         </div>

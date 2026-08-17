@@ -28,7 +28,20 @@ class _PosScreenState extends State<PosScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text('Kopi Tabo POS', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.all(2),
+              child: Image.asset('assets/images/logo.png', height: 36, width: 36, fit: BoxFit.contain),
+            ),
+            const SizedBox(width: 12),
+            const Text('Kopi Tabo POS', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+          ],
+        ),
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         actions: [
