@@ -31,6 +31,38 @@ app.get('/api/products', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
+
+// Create a new product
+app.post('/api/products', async (req, res) => {
+  try {
+    const { name, price, categoryName } = req.body;
+    
+    // Find or create category
+    let category = await prisma.category.findFirst({
+      where: { name: categoryName }
+    });
+    
+    if (!category) {
+      category = await prisma.category.create({
+        data: { name: categoryName }
+      });
+    }
+
+    const product = await prisma.product.create({
+      data: {
+        name,
+        price: parseFloat(price),
+        categoryId: category.id
+      }
+    });
+    
+    res.status(201).json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to create product' });
+  }
+});
+
 // Create a new order
 app.post('/api/orders', async (req, res) => {
   try {
