@@ -141,7 +141,7 @@ export default function KDSPage() {
 
                 {/* Body (Items) */}
                 <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-                  {order.items.map((item, idx) => (
+                  {order.items.map((item: any, idx: number) => (
                     <div key={idx} className="flex gap-3 pb-3 border-b border-slate-700/50 last:border-0 last:pb-0">
                       <div className="font-bold text-lg text-amber-500 bg-slate-900 w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
                         {item.qty}x
