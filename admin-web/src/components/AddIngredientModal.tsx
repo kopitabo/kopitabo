@@ -159,7 +159,7 @@ export default function AddIngredientModal({
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Cost per Unit (Harga Modal per {formData.unit})
+                  Harga per Satuan (Rp / {formData.unit})
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-2.5 text-slate-400 text-sm font-medium">Rp</span>
@@ -168,14 +168,14 @@ export default function AddIngredientModal({
                     required
                     step="any"
                     min="0"
-                    placeholder="e.g. 300 (Rp 300 / g)"
+                    placeholder="e.g. 300"
                     className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
                     value={formData.costPerUnit}
                     onChange={e => setFormData({...formData, costPerUnit: e.target.value})}
                   />
                 </div>
                 <p className="text-xs text-slate-400 mt-1">
-                  Harga modal per 1 {formData.unit} bahan ini untuk kalkulasi HPP otomatis.
+                  Masukkan harga modal per 1 {formData.unit} bahan baku ini.
                 </p>
               </div>
 

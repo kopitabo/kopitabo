@@ -97,7 +97,7 @@ export default function InventoryPage() {
             <TableRow className="hover:bg-transparent">
               <TableHead className="font-semibold text-slate-600 h-12">Ingredient Name</TableHead>
               <TableHead className="font-semibold text-slate-600 h-12">Current Stock</TableHead>
-              <TableHead className="font-semibold text-slate-600 h-12">Cost per Unit (Modal HPP)</TableHead>
+              <TableHead className="font-semibold text-slate-600 h-12">Harga per Satuan</TableHead>
               <TableHead className="text-right font-semibold text-slate-600 h-12 pr-6">Actions</TableHead>
             </TableRow>
           </TableHeader>
