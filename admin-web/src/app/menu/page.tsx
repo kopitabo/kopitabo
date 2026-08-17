@@ -127,9 +127,15 @@ export default function MenuPage() {
                     <TableRow key={product.id} className="group hover:bg-slate-50/50 transition-colors">
                         <TableCell className="py-4">
                           <div className="flex items-start gap-3">
-                              <div className="bg-amber-100 p-2 rounded-lg group-hover:bg-amber-200 transition-colors mt-0.5">
-                                  <Coffee className="h-4 w-4 text-amber-600" />
-                              </div>
+                              {product.imageUrl ? (
+                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 mt-0.5">
+                                  <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                                </div>
+                              ) : (
+                                <div className="bg-amber-100 p-2.5 rounded-lg group-hover:bg-amber-200 transition-colors mt-0.5 flex-shrink-0">
+                                    <Coffee className="h-4 w-4 text-amber-600" />
+                                </div>
+                              )}
                               <div>
                                   <span className="font-semibold text-slate-900 block">{product.name}</span>
                                   {product.recipes && product.recipes.length > 0 ? (

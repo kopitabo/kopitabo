@@ -40,7 +40,7 @@ app.get('/api/products', async (req, res) => {
 // Create a new product
 app.post('/api/products', async (req, res) => {
   try {
-    const { name, price, hpp, categoryName, recipes } = req.body;
+    const { name, price, hpp, imageUrl, categoryName, recipes } = req.body;
     
     // Find or create category
     let category = await prisma.category.findFirst({
@@ -58,6 +58,7 @@ app.post('/api/products', async (req, res) => {
         name,
         price: parseFloat(price || 0),
         hpp: parseFloat(hpp || 0),
+        imageUrl: imageUrl || null,
         categoryId: category.id,
         recipes: recipes && Array.isArray(recipes) ? {
           create: recipes.map((r: any) => ({
@@ -87,7 +88,7 @@ app.post('/api/products', async (req, res) => {
 app.put('/api/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, hpp, categoryName, recipes } = req.body;
+    const { name, price, hpp, imageUrl, categoryName, recipes } = req.body;
 
     let category = await prisma.category.findFirst({
       where: { name: categoryName }
@@ -112,6 +113,7 @@ app.put('/api/products/:id', async (req, res) => {
         name,
         price: price !== undefined ? parseFloat(price) : undefined,
         hpp: hpp !== undefined ? parseFloat(hpp) : undefined,
+        imageUrl: imageUrl !== undefined ? imageUrl : undefined,
         categoryId: category ? category.id : undefined,
         recipes: recipes && Array.isArray(recipes) ? {
           create: recipes.map((r: any) => ({

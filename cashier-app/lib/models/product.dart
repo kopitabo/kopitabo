@@ -17,6 +17,7 @@ class Product {
   final String name;
   final double price;
   final String? description;
+  final String? imageUrl;
   final String categoryId;
   final Category? category;
 
@@ -25,6 +26,7 @@ class Product {
     required this.name,
     required this.price,
     this.description,
+    this.imageUrl,
     required this.categoryId,
     this.category,
   });
@@ -35,6 +37,7 @@ class Product {
       name: json['name'],
       price: (json['price'] as num).toDouble(),
       description: json['description'],
+      imageUrl: json['imageUrl'],
       categoryId: json['categoryId'],
       category: json['category'] != null ? Category.fromJson(json['category']) : null,
     );

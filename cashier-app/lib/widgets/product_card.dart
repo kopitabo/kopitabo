@@ -11,39 +11,93 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formatCurrency = NumberFormat("#,##0", "en_US");
+    final hasImage = product.imageUrl != null && product.imageUrl!.trim().isNotEmpty;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade200),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Product Image / Fallback Container
               Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(12),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.amber.shade50,
+                    child: hasImage
+                        ? Image.network(
+                            product.imageUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Center(
+                              child: Icon(Icons.local_cafe_rounded, size: 28, color: Colors.amber.shade700),
+                            ),
+                          )
+                        : Center(
+                            child: Icon(Icons.local_cafe_rounded, size: 28, color: Colors.amber.shade700),
+                          ),
                   ),
-                  child: Icon(Icons.coffee, size: 40, color: Colors.brown.shade400),
                 ),
               ),
-              const SizedBox(height: 12),
-              Text(
-                product.name,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Rp ${formatCurrency.format(product.price)}',
-                style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+
+              // Product Info (Compact Padding & Clean Typography)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      product.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        color: Color(0xFF1E293B),
+                        height: 1.2,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Rp ${formatCurrency.format(product.price)}',
+                          style: TextStyle(
+                            color: Colors.amber.shade800,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.shade100,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.add, size: 12, color: Colors.amber.shade900),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

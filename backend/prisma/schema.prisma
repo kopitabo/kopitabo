@@ -40,6 +40,7 @@ model Product {
   id          String      @id @default(uuid())
   name        String
   description String?
+  imageUrl    String?
   price       Float
   hpp         Float       @default(0)
   categoryId  String

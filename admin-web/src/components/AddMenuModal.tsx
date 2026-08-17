@@ -31,6 +31,7 @@ export default function AddMenuModal({
   const [categoryName, setCategoryName] = useState("Coffee");
   const [price, setPrice] = useState("");
   const [manualHpp, setManualHpp] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [targetMargin, setTargetMargin] = useState(60); // 60% default margin
   const [recipes, setRecipes] = useState<RecipeItem[]>([]);
 
@@ -48,6 +49,7 @@ export default function AddMenuModal({
       setCategoryName(productToEdit.category?.name || productToEdit.categoryName || "Coffee");
       setPrice(productToEdit.price !== undefined ? String(productToEdit.price) : "");
       setManualHpp(productToEdit.hpp !== undefined ? String(productToEdit.hpp) : "");
+      setImageUrl(productToEdit.imageUrl || "");
       
       if (productToEdit.recipes && Array.isArray(productToEdit.recipes)) {
         setRecipes(
@@ -64,6 +66,7 @@ export default function AddMenuModal({
       setCategoryName("Coffee");
       setPrice("");
       setManualHpp("");
+      setImageUrl("");
       setRecipes([]);
     }
   }, [productToEdit, isOpen]);
@@ -134,6 +137,7 @@ export default function AddMenuModal({
           name,
           price: parseFloat(price || "0"),
           hpp: totalHpp,
+          imageUrl: imageUrl.trim() || undefined,
           categoryName,
           recipes
         })
@@ -173,7 +177,7 @@ export default function AddMenuModal({
                   {productToEdit ? "Edit Menu Item" : "Tambah Menu Baru"}
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Atur komposisi bahan baku (recipe), hitung modal HPP, dan tetapkan harga jual.
+                  Atur komposisi bahan baku (recipe), foto menu, hitung modal HPP, dan tetapkan harga jual.
                 </p>
               </div>
               <button 
@@ -209,6 +213,26 @@ export default function AddMenuModal({
                     onChange={e => setCategoryName(e.target.value)}
                   />
                 </div>
+              </div>
+
+              {/* Image URL & Preview */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">URL Foto Menu (Opsional)</label>
+                <div className="flex gap-3 items-center">
+                  <input 
+                    type="url" 
+                    placeholder="https://images.unsplash.com/.../coffee.jpg"
+                    className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all text-sm"
+                    value={imageUrl}
+                    onChange={e => setImageUrl(e.target.value)}
+                  />
+                  {imageUrl ? (
+                    <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0">
+                      <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                    </div>
+                  ) : null}
+                </div>
+                <p className="text-xs text-slate-400 mt-1">Masukkan link foto produk agar tampil menarik di layar Kasir.</p>
               </div>
 
               {/* Recipe / Ingredients Section */}
