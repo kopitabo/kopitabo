@@ -56,3 +56,18 @@ export async function deleteIngredient(id: string) {
     return false;
   }
 }
+
+export function getCostPerBaseUnit(cost: number, unit: string): number {
+  const u = (unit || '').toLowerCase();
+  if (u === 'galon') return cost / 19000; // Rp per ml
+  if (u === 'kg') return cost / 1000;     // Rp per gram
+  if (u === 'liter' || u === 'l') return cost / 1000; // Rp per ml
+  return cost;
+}
+
+export function getBaseUnit(unit: string): string {
+  const u = (unit || '').toLowerCase();
+  if (u === 'galon' || u === 'liter' || u === 'l') return 'ml';
+  if (u === 'kg') return 'g';
+  return unit;
+}

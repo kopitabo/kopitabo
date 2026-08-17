@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchInventory, API_URL } from "@/lib/api";
+import { fetchInventory, API_URL, getCostPerBaseUnit, getBaseUnit } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { 
   Calculator, 
@@ -48,11 +48,12 @@ export default function HppCalculatorPage() {
       .finally(() => setLoadingIngredients(false));
   }, []);
 
-  // HPP Calculation
+  // HPP Calculation with unit conversion
   const ingredientsHpp = items.reduce((sum, item) => {
     const ing = availableIngredients.find((i) => i.id === item.ingredientId);
     if (!ing) return sum;
-    return sum + item.quantity * (ing.costPerUnit || 0);
+    const costPerBase = getCostPerBaseUnit(ing.costPerUnit || 0, ing.unit || '');
+    return sum + item.quantity * costPerBase;
   }, 0);
 
   const overheadVal = parseFloat(overheadCost) || 0;
@@ -203,7 +204,9 @@ export default function HppCalculatorPage() {
               <div className="space-y-3">
                 {items.map((item, index) => {
                   const selectedIng = availableIngredients.find((i) => i.id === item.ingredientId);
-                  const subtotal = item.quantity * (selectedIng?.costPerUnit || 0);
+                  const costPerBase = getCostPerBaseUnit(selectedIng?.costPerUnit || 0, selectedIng?.unit || '');
+                  const baseUnit = getBaseUnit(selectedIng?.unit || '');
+                  const subtotal = item.quantity * costPerBase;
 
                   return (
                     <div key={index} className="flex items-center gap-3 bg-slate-50/80 p-3 rounded-xl border border-slate-200">
@@ -233,7 +236,7 @@ export default function HppCalculatorPage() {
                             value={item.quantity}
                             onChange={(e) => handleItemChange(index, "quantity", parseFloat(e.target.value) || 0)}
                           />
-                          <span className="text-xs text-slate-500 font-medium">{selectedIng?.unit || ""}</span>
+                          <span className="text-xs text-slate-500 font-medium">{baseUnit}</span>
                         </div>
                       </div>
 

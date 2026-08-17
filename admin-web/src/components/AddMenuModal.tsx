@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Plus, X, Trash2, Calculator, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { API_URL, fetchInventory } from "@/lib/api";
+import { API_URL, fetchInventory, getCostPerBaseUnit, getBaseUnit } from "@/lib/api";
 
 interface RecipeItem {
   ingredientId: string;
@@ -71,11 +71,12 @@ export default function AddMenuModal({
     }
   }, [productToEdit, isOpen]);
 
-  // Calculate HPP from selected ingredients
+  // Calculate HPP from selected ingredients with unit conversion
   const calculatedIngredientsHpp = recipes.reduce((sum, item) => {
     const ing = availableIngredients.find((i) => i.id === item.ingredientId);
     if (!ing) return sum;
-    return sum + item.quantity * (ing.costPerUnit || 0);
+    const costPerBase = getCostPerBaseUnit(ing.costPerUnit || 0, ing.unit || '');
+    return sum + item.quantity * costPerBase;
   }, 0);
 
   // Total HPP (ingredients cost or manual override if set)
@@ -266,7 +267,9 @@ export default function AddMenuModal({
                   <div className="space-y-2">
                     {recipes.map((item, index) => {
                       const selectedIng = availableIngredients.find((i) => i.id === item.ingredientId);
-                      const itemSubtotal = item.quantity * (selectedIng?.costPerUnit || 0);
+                      const costPerBase = getCostPerBaseUnit(selectedIng?.costPerUnit || 0, selectedIng?.unit || '');
+                      const baseUnit = getBaseUnit(selectedIng?.unit || '');
+                      const itemSubtotal = item.quantity * costPerBase;
 
                       return (
                         <div key={index} className="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-slate-200 text-sm">
@@ -291,7 +294,7 @@ export default function AddMenuModal({
                               value={item.quantity}
                               onChange={(e) => handleRecipeChange(index, "quantity", parseFloat(e.target.value) || 0)}
                             />
-                            <span className="text-xs text-slate-500 w-8">{selectedIng?.unit || ""}</span>
+                            <span className="text-xs text-slate-500 font-medium w-8">{baseUnit}</span>
                           </div>
 
                           <div className="text-right min-w-[90px]">

@@ -129,28 +129,31 @@ export default function AddIngredientModal({
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Unit</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Satuan Pembelian (Unit)</label>
                   <select 
                     required
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all bg-white"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all bg-white text-sm"
                     value={formData.unit}
                     onChange={e => setFormData({...formData, unit: e.target.value})}
                   >
-                    <option value="g">Grams (g)</option>
-                    <option value="ml">Milliliters (ml)</option>
-                    <option value="pcs">Pieces (pcs)</option>
-                    <option value="pack">Pack</option>
+                    <option value="kg">Kilogram (kg)</option>
+                    <option value="galon">Galon (19 Liter)</option>
+                    <option value="liter">Liter (l)</option>
+                    <option value="g">Gram (g)</option>
+                    <option value="ml">Milliliter (ml)</option>
+                    <option value="pack">Pack / Bungkus</option>
+                    <option value="pcs">Pieces / Buah (pcs)</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Current Stock</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Stok Saat Ini ({formData.unit})</label>
                   <input 
                     type="number" 
                     required
                     step="any"
                     min="0"
-                    placeholder="e.g. 1000"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                    placeholder={`e.g. ${formData.unit === 'galon' ? '2' : formData.unit === 'kg' ? '3' : '1000'}`}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all text-sm"
                     value={formData.stock}
                     onChange={e => setFormData({...formData, stock: e.target.value})}
                   />
@@ -159,7 +162,7 @@ export default function AddIngredientModal({
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Harga per Satuan (Rp / {formData.unit})
+                  Harga Beli per 1 {formData.unit.toUpperCase()} (Rp / {formData.unit})
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-2.5 text-slate-400 text-sm font-medium">Rp</span>
@@ -168,14 +171,17 @@ export default function AddIngredientModal({
                     required
                     step="any"
                     min="0"
-                    placeholder="e.g. 300"
-                    className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                    placeholder={`e.g. ${formData.unit === 'galon' ? '6000' : formData.unit === 'kg' ? '250000' : formData.unit === 'liter' ? '18000' : '300'}`}
+                    className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all text-sm"
                     value={formData.costPerUnit}
                     onChange={e => setFormData({...formData, costPerUnit: e.target.value})}
                   />
                 </div>
-                <p className="text-xs text-slate-400 mt-1">
-                  Masukkan harga modal per 1 {formData.unit} bahan baku ini.
+                <p className="text-xs text-amber-600 font-medium mt-1.5">
+                  {formData.unit === 'galon' && "💡 Masukkan Rp 6.000 (harga per 1 galon). Sistem otomatis menghitung harga per ml (Rp 0.32/ml) saat meracik resep."}
+                  {formData.unit === 'kg' && "💡 Masukkan harga per 1 kg (misal Rp 250.000). Sistem otomatis menghitung harga per gram (Rp 250/g) saat meracik resep."}
+                  {formData.unit === 'liter' && "💡 Masukkan harga per 1 liter (misal Rp 18.000). Sistem otomatis menghitung harga per ml (Rp 18/ml) saat meracik resep."}
+                  {formData.unit !== 'galon' && formData.unit !== 'kg' && formData.unit !== 'liter' && `Masukkan harga beli modal per 1 ${formData.unit} bahan baku ini.`}
                 </p>
               </div>
 

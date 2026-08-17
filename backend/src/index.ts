@@ -37,6 +37,14 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
+function getCostPerBaseUnit(cost: number, unit: string): number {
+  const u = (unit || '').toLowerCase();
+  if (u === 'galon') return cost / 19000; // Rp per ml
+  if (u === 'kg') return cost / 1000;     // Rp per gram
+  if (u === 'liter' || u === 'l') return cost / 1000; // Rp per ml
+  return cost;
+}
+
 // Create a new product
 app.post('/api/products', async (req, res) => {
   try {
@@ -61,7 +69,7 @@ app.post('/api/products', async (req, res) => {
         if (r.ingredientId) {
           const ing = await prisma.ingredient.findUnique({ where: { id: r.ingredientId } });
           if (ing) {
-            recipeSum += (parseFloat(r.quantity || 0) * (ing.costPerUnit || 0));
+            recipeSum += (parseFloat(r.quantity || 0) * getCostPerBaseUnit(ing.costPerUnit || 0, ing.unit || ''));
           }
         }
       }
@@ -132,7 +140,7 @@ app.put('/api/products/:id', async (req, res) => {
         if (r.ingredientId) {
           const ing = await prisma.ingredient.findUnique({ where: { id: r.ingredientId } });
           if (ing) {
-            recipeSum += (parseFloat(r.quantity || 0) * (ing.costPerUnit || 0));
+            recipeSum += (parseFloat(r.quantity || 0) * getCostPerBaseUnit(ing.costPerUnit || 0, ing.unit || ''));
           }
         }
       }
@@ -353,7 +361,7 @@ app.put('/api/inventory/:id', async (req, res) => {
           where: { productId: prodId },
           include: { ingredient: true }
         });
-        const newHpp = prodRecipes.reduce((sum, r) => sum + (r.quantity * (r.ingredient.costPerUnit || 0)), 0);
+        const newHpp = prodRecipes.reduce((sum, r) => sum + (r.quantity * getCostPerBaseUnit(r.ingredient.costPerUnit || 0, r.ingredient.unit || '')), 0);
         await prisma.product.update({
           where: { id: prodId },
           data: { hpp: newHpp }
