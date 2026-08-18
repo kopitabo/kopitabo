@@ -311,14 +311,31 @@ app.get('/api/inventory', async (req, res) => {
   }
 });
 
-// Create a new ingredient
+// Create or update ingredient if name exists
 app.post('/api/inventory', async (req, res) => {
   try {
     const { name, unit, stock, costPerUnit } = req.body;
-    
+    const cleanName = (name || '').trim();
+
+    const existing = await prisma.ingredient.findFirst({
+      where: { name: { equals: cleanName } }
+    });
+
+    if (existing) {
+      const updated = await prisma.ingredient.update({
+        where: { id: existing.id },
+        data: {
+          unit: unit || existing.unit,
+          stock: stock !== undefined ? parseFloat(stock) : existing.stock,
+          costPerUnit: costPerUnit !== undefined ? parseFloat(costPerUnit) : existing.costPerUnit
+        }
+      });
+      return res.status(200).json(updated);
+    }
+
     const ingredient = await prisma.ingredient.create({
       data: {
-        name,
+        name: cleanName,
         unit,
         stock: parseFloat(stock || 0),
         costPerUnit: parseFloat(costPerUnit || 0)
