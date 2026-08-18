@@ -126,9 +126,15 @@ export default function InventoryPage() {
                     </div>
                     </TableCell>
                     <TableCell className="py-4">
-                    <span className={`px-2.5 py-1 rounded-md text-sm font-bold ${ingredient.stock < 500 && ingredient.unit !== 'pcs' ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
-                        {ingredient.stock} {ingredient.unit}
-                    </span>
+                    {(() => {
+                      const u = (ingredient.unit || '').toLowerCase();
+                      const isLow = (u === 'galon' || u === 'kg' || u === 'liter' || u === 'l') ? ingredient.stock < 2 : (u === 'pcs' || u === 'pack') ? ingredient.stock < 10 : ingredient.stock < 500;
+                      return (
+                        <span className={`px-2.5 py-1 rounded-md text-sm font-bold ${isLow ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                            {ingredient.stock} {ingredient.unit}
+                        </span>
+                      );
+                    })()}
                     </TableCell>
                     <TableCell className="py-4">
                     <span className="font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md text-sm">
