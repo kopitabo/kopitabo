@@ -15,10 +15,10 @@ class CartSidebar extends StatelessWidget {
       width: 360,
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(left: BorderSide(color: Colors.slate.shade200)),
+        border: Border(left: BorderSide(color: Colors.blueGrey.shade200)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(-4, 0),
           ),
@@ -67,16 +67,16 @@ class CartSidebar extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.remove_shopping_cart_outlined, size: 48, color: Colors.slate.shade300),
+                        Icon(Icons.remove_shopping_cart_outlined, size: 48, color: Colors.blueGrey.shade300),
                         const SizedBox(height: 12),
                         Text(
                           'Keranjang masih kosong',
-                          style: TextStyle(color: Colors.slate.shade500, fontSize: 14, fontWeight: FontWeight.w500),
+                          style: TextStyle(color: Colors.blueGrey.shade500, fontSize: 14, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'Pilih menu di sebelah kiri untuk menambahkan',
-                          style: TextStyle(color: Colors.slate.shade400, fontSize: 11),
+                          style: TextStyle(color: Colors.blueGrey.shade400, fontSize: 11),
                         ),
                       ],
                     ),
@@ -111,7 +111,7 @@ class CartSidebar extends StatelessWidget {
                                   const SizedBox(height: 2),
                                   Text(
                                     'Rp ${formatCurrency.format(item.product.price)} x ${item.quantity}',
-                                    style: TextStyle(color: Colors.slate.shade500, fontSize: 11),
+                                    style: TextStyle(color: Colors.blueGrey.shade500, fontSize: 11),
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
@@ -135,7 +135,7 @@ class CartSidebar extends StatelessWidget {
                                     onTap: () => cart.decreaseQuantity(item.product),
                                     child: const Padding(
                                       padding: EdgeInsets.all(6.0),
-                                      child: Icon(Icons.remove, size: 14, color: Colors.slate),
+                                      child: Icon(Icons.remove, size: 14, color: Colors.blueGrey),
                                     ),
                                   ),
                                   Padding(
@@ -149,7 +149,7 @@ class CartSidebar extends StatelessWidget {
                                     onTap: () => cart.addToCart(item.product),
                                     child: const Padding(
                                       padding: EdgeInsets.all(6.0),
-                                      child: Icon(Icons.add, size: 14, color: Colors.slate),
+                                      child: Icon(Icons.add, size: 14, color: Colors.blueGrey),
                                     ),
                                   ),
                                 ],
@@ -170,7 +170,7 @@ class CartSidebar extends StatelessWidget {
               border: Border(top: BorderSide(color: Colors.grey.shade200)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),
@@ -179,12 +179,12 @@ class CartSidebar extends StatelessWidget {
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.between,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Total Pembayaran:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
                     Text(
                       'Rp ${formatCurrency.format(cart.totalAmount)}',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.black, color: Colors.amber.shade900),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.amber.shade900),
                     ),
                   ],
                 ),
@@ -216,9 +216,9 @@ class CartSidebar extends StatelessWidget {
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(success ? 'Pesanan berhasil dibuat!' : 'Mode Offline: Pesanan disimpan di perangkat lokal'),
-                                backgroundColor: success ? Colors.emerald.shade700 : Colors.amber.shade800,
-                              ),
+                                  content: Text(success ? 'Pesanan berhasil dibuat!' : 'Mode Offline: Pesanan disimpan di perangkat lokal'),
+                                  backgroundColor: success ? Colors.green.shade700 : Colors.amber.shade800,
+                                ),
                             );
                           },
                     style: ElevatedButton.styleFrom(

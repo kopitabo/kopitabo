@@ -50,7 +50,7 @@ class _PosScreenState extends State<PosScreen> {
             const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Kopi Tabo', style: TextStyle(fontWeight: FontWeight.extrabold, fontSize: 18, color: Colors.white)),
+                Text('Kopi Tabo', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: Colors.white)),
                 Text('Cashier POS Portal', style: TextStyle(fontSize: 11, color: Colors.white70, fontWeight: FontWeight.w500)),
               ],
             ),
@@ -87,11 +87,11 @@ class _PosScreenState extends State<PosScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.wifi_off_rounded, size: 56, color: Colors.slate.shade400),
+                        Icon(Icons.wifi_off_rounded, size: 56, color: Colors.blueGrey.shade400),
                         const SizedBox(height: 12),
                         Text(
                           'Server tidak dapat terhubung.',
-                          style: TextStyle(color: Colors.slate.shade700, fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -119,7 +119,7 @@ class _PosScreenState extends State<PosScreen> {
                 final categoriesList = categoriesSet.toList();
 
                 // Filter products based on search query and selected category
-                final filteredProducts = allProducts.filter((p) {
+                final filteredProducts = allProducts.where((p) {
                   final matchesSearch = p.name.toLowerCase().contains(_searchQuery.toLowerCase());
                   final catName = p.category?.name ?? p.categoryId;
                   final matchesCat = _selectedCategory == "Semua" || catName == _selectedCategory;
@@ -131,8 +131,10 @@ class _PosScreenState extends State<PosScreen> {
                     // Search & Category Filter Header Bar
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      color: Colors.white,
-                      border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+                      ),
                       child: Column(
                         children: [
                           // Search Input Box
@@ -147,8 +149,8 @@ class _PosScreenState extends State<PosScreen> {
                               style: const TextStyle(fontSize: 13),
                               decoration: const InputDecoration(
                                 hintText: 'Cari nama menu...',
-                                hintStyle: TextStyle(fontSize: 13, color: Colors.slate),
-                                prefixIcon: Icon(Icons.search_rounded, size: 20, color: Colors.slate),
+                                hintStyle: TextStyle(fontSize: 13, color: Colors.blueGrey),
+                                prefixIcon: Icon(Icons.search_rounded, size: 20, color: Colors.blueGrey),
                                 border: InputBorder.none,
                                 contentPadding: EdgeInsets.symmetric(vertical: 10),
                               ),
@@ -197,7 +199,7 @@ class _PosScreenState extends State<PosScreen> {
                           ? Center(
                               child: Text(
                                 'Tidak ada menu ditemukan',
-                                style: TextStyle(color: Colors.slate.shade500, fontSize: 14),
+                                style: TextStyle(color: Colors.blueGrey.shade500, fontSize: 14),
                               ),
                             )
                           : GridView.builder(
