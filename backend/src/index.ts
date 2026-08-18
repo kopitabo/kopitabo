@@ -300,11 +300,61 @@ app.get('/api/orders', async (req, res) => {
 // Get all inventory (Ingredients)
 app.get('/api/inventory', async (req, res) => {
   try {
-    const ingredients = await prisma.ingredient.findMany({
+    let ingredients = await prisma.ingredient.findMany({
       orderBy: {
         name: 'asc'
       }
     });
+
+    // Auto fix any legacy unit mismatches in DB
+    let needRefetch = false;
+    for (const ing of ingredients) {
+      const lower = ing.name.toLowerCase();
+      if (lower.includes('susu') || lower.includes('milk')) {
+        if (ing.unit === 'ml' || ing.stock > 100) {
+          await prisma.ingredient.update({
+            where: { id: ing.id },
+            data: {
+              unit: 'liter',
+              stock: ing.stock > 100 ? (ing.stock / 1000) : ing.stock,
+              costPerUnit: ing.costPerUnit < 100 ? (ing.costPerUnit * 1000) : ing.costPerUnit
+            }
+          });
+          needRefetch = true;
+        }
+      } else if (lower.includes('galon') || lower.includes('air')) {
+        if (ing.unit === 'ml' || ing.stock > 100) {
+          await prisma.ingredient.update({
+            where: { id: ing.id },
+            data: {
+              unit: 'galon',
+              stock: ing.stock > 100 ? Math.round(ing.stock / 19000) || 1 : ing.stock,
+              costPerUnit: ing.costPerUnit < 100 ? 6000 : ing.costPerUnit
+            }
+          });
+          needRefetch = true;
+        }
+      } else if (lower.includes('kopi') || lower.includes('coffee') || lower.includes('arabika') || lower.includes('blend')) {
+        if (ing.unit === 'g' || ing.stock > 100) {
+          await prisma.ingredient.update({
+            where: { id: ing.id },
+            data: {
+              unit: 'kg',
+              stock: ing.stock > 100 ? (ing.stock / 1000) : ing.stock,
+              costPerUnit: ing.costPerUnit < 1000 ? (ing.costPerUnit * 1000) : ing.costPerUnit
+            }
+          });
+          needRefetch = true;
+        }
+      }
+    }
+
+    if (needRefetch) {
+      ingredients = await prisma.ingredient.findMany({
+        orderBy: { name: 'asc' }
+      });
+    }
+
     res.json(ingredients);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch inventory' });

@@ -33,12 +33,12 @@ export default function AddIngredientModal({
     if (ingredientToEdit) {
       setFormData({
         name: ingredientToEdit.name || "",
-        unit: ingredientToEdit.unit || "g",
+        unit: ingredientToEdit.unit || "liter",
         stock: ingredientToEdit.stock !== undefined ? String(ingredientToEdit.stock) : "",
         costPerUnit: ingredientToEdit.costPerUnit !== undefined ? String(ingredientToEdit.costPerUnit) : ""
       });
     } else {
-      setFormData({ name: "", unit: "g", stock: "", costPerUnit: "" });
+      setFormData({ name: "", unit: "liter", stock: "", costPerUnit: "" });
     }
   }, [ingredientToEdit, isOpen]);
 
@@ -136,13 +136,13 @@ export default function AddIngredientModal({
                     value={formData.unit}
                     onChange={e => setFormData({...formData, unit: e.target.value})}
                   >
+                    <option value="liter">Liter (l)</option>
                     <option value="kg">Kilogram (kg)</option>
                     <option value="galon">Galon (19 Liter)</option>
-                    <option value="liter">Liter (l)</option>
-                    <option value="g">Gram (g)</option>
-                    <option value="ml">Milliliter (ml)</option>
                     <option value="pack">Pack / Bungkus</option>
                     <option value="pcs">Pieces / Buah (pcs)</option>
+                    <option value="g">Gram (g)</option>
+                    <option value="ml">Milliliter (ml)</option>
                   </select>
                 </div>
                 <div>
@@ -152,7 +152,7 @@ export default function AddIngredientModal({
                     required
                     step="any"
                     min="0"
-                    placeholder={`e.g. ${formData.unit === 'galon' ? '2' : formData.unit === 'kg' ? '3' : '1000'}`}
+                    placeholder={`e.g. ${formData.unit === 'galon' ? '2' : formData.unit === 'kg' ? '3' : formData.unit === 'liter' ? '5' : '100'}`}
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all text-sm"
                     value={formData.stock}
                     onChange={e => setFormData({...formData, stock: e.target.value})}
@@ -171,17 +171,20 @@ export default function AddIngredientModal({
                     required
                     step="any"
                     min="0"
-                    placeholder={`e.g. ${formData.unit === 'galon' ? '6000' : formData.unit === 'kg' ? '250000' : formData.unit === 'liter' ? '18000' : '300'}`}
-                    className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all text-sm"
+                    placeholder={`e.g. ${formData.unit === 'liter' ? '20400' : formData.unit === 'galon' ? '6000' : formData.unit === 'kg' ? '250000' : '300'}`}
+                    className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all text-sm font-semibold"
                     value={formData.costPerUnit}
                     onChange={e => setFormData({...formData, costPerUnit: e.target.value})}
                   />
                 </div>
                 <p className="text-xs text-amber-600 font-medium mt-1.5">
-                  {formData.unit === 'galon' && "💡 Masukkan Rp 6.000 (harga per 1 galon). Sistem otomatis menghitung harga per ml (Rp 0.32/ml) saat meracik resep."}
-                  {formData.unit === 'kg' && "💡 Masukkan harga per 1 kg (misal Rp 250.000). Sistem otomatis menghitung harga per gram (Rp 250/g) saat meracik resep."}
-                  {formData.unit === 'liter' && "💡 Masukkan harga per 1 liter (misal Rp 18.000). Sistem otomatis menghitung harga per ml (Rp 18/ml) saat meracik resep."}
-                  {formData.unit !== 'galon' && formData.unit !== 'kg' && formData.unit !== 'liter' && `Masukkan harga beli modal per 1 ${formData.unit} bahan baku ini.`}
+                  {formData.unit === 'liter' && "💡 Masukkan harga beli per 1 liter (misal Rp 20.400). Sistem otomatis menghitung harga per ml (Rp 20.4/ml) saat meracik resep."}
+                  {formData.unit === 'galon' && "💡 Masukkan harga beli per 1 galon (misal Rp 6.000). Sistem otomatis menghitung harga per ml (Rp 0.32/ml) saat meracik resep."}
+                  {formData.unit === 'kg' && "💡 Masukkan harga beli per 1 kg (misal Rp 250.000). Sistem otomatis menghitung harga per gram (Rp 250/g) saat meracik resep."}
+                  {formData.unit === 'pack' && "💡 Masukkan harga beli per 1 pack/bungkus."}
+                  {formData.unit === 'pcs' && "💡 Masukkan harga beli per 1 pcs/buah."}
+                  {formData.unit === 'ml' && "💡 Masukkan harga beli per 1 ml."}
+                  {formData.unit === 'g' && "💡 Masukkan harga beli per 1 gram."}
                 </p>
               </div>
 
