@@ -25,7 +25,16 @@ export default function InventoryPage() {
   const loadIngredients = async () => {
     try {
       const data = await fetchInventory();
-      setIngredients(data);
+      const uniqueMap = new Map();
+      if (Array.isArray(data)) {
+        for (const item of data) {
+          const key = (item.name || '').trim().toLowerCase();
+          if (!uniqueMap.has(key)) {
+            uniqueMap.set(key, item);
+          }
+        }
+      }
+      setIngredients(Array.from(uniqueMap.values()));
     } catch (e) {
       console.error(e);
     } finally {

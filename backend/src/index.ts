@@ -349,6 +349,26 @@ app.get('/api/inventory', async (req, res) => {
       }
     }
 
+    // Auto remove duplicate ingredient rows from database
+    const allIngs = await prisma.ingredient.findMany({ orderBy: { createdAt: 'asc' } });
+    const seenNames = new Set<string>();
+    const duplicateIdsToDelete: string[] = [];
+
+    for (const ing of allIngs) {
+      const nameKey = ing.name.trim().toLowerCase();
+      if (seenNames.has(nameKey)) {
+        duplicateIdsToDelete.push(ing.id);
+      } else {
+        seenNames.add(nameKey);
+      }
+    }
+
+    if (duplicateIdsToDelete.length > 0) {
+      await prisma.recipe.deleteMany({ where: { ingredientId: { in: duplicateIdsToDelete } } });
+      await prisma.ingredient.deleteMany({ where: { id: { in: duplicateIdsToDelete } } });
+      needRefetch = true;
+    }
+
     if (needRefetch) {
       ingredients = await prisma.ingredient.findMany({
         orderBy: { name: 'asc' }
